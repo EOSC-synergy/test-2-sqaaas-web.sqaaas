@@ -1,15 +1,34 @@
 config:
-  credentials: []
+  credentials:
+  - id: mycreds
+    password_var: GIT_PASS
+    type: username_password
+    username_var: GIT_USER
+  ojete_calor: []
   project_repos:
-  - branch: ''
-    repo: https://github.com/EOSC-synergy/sqaaas-web.git
+    github.com/EOSC-synergy/checkstyle:
+      branch: master
+      repo: https://github.com/EOSC-synergy/checkstyle
+    github.com/EOSC-synergy/sqaaas-web:
+      branch: dev-diana
+      repo: https://github.com/EOSC-synergy/sqaaas-web
 environment:
-  JPL_DOCKERPUSH: node
+  JPL_DOCKERSERVER: https://hub.docker.com/
 sqa_criteria:
-  qc_doc:
+  qc_functional:
     repos:
       this_repo:
+        tox:
+          testenv:
+          - bandit
+          tox_file: /deepaas-testing/tox.ini
+  qc_style:
+    repos:
+      github.com/EOSC-synergy/checkstyle:
         commands:
-        - npm install
+        - mvn -f ./maven-project/checkstyle-samples/pom.xml checkstyle:check
+        container: maven-testing
+      this_repo:
+        commands:
+        - whatevernosensecommand
         container: node
-timeout: 600
